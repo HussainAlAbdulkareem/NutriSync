@@ -80,9 +80,3 @@ npm run dev
 - 🗂️ CRUD for Ingredients & Categories
 - ❤️ Like Recipes, ➕ Track Calories
 
----
-
-## ❗ Notes
-
-- Ensure PostgreSQL is set up and matches your Supabase schema.
-- All API routes are prefixed under `/api/`.
