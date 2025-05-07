@@ -9,12 +9,18 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 
 db_url = os.getenv('DATABASE_URL')
-print("→ DATABASE_URL is:", db_url)  
-if not db_url:
-    raise RuntimeError("DATABASE_URL is not set!")
+print(">>> DEBUG: DATABASE_URL =", db_url, file=sys.stderr)
 
-result = urlparse(db_url)
-print("→ Parsed host:", result.hostname)  
+if not db_url:
+    print(">>> ERROR: DATABASE_URL is empty!", file=sys.stderr)
+else:
+    parsed = urlparse(db_url)
+    print(">>> DEBUG: Parsed host:", parsed.hostname, "port:", parsed.port, file=sys.stderr)
+
+# Then in get_connection():
+def get_connection():
+    # instead of parsing yourself, pass the full DSN string:
+    return psycopg2.connect(dsn=db_url, sslmode="require")
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
