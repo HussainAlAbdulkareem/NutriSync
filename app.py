@@ -3,11 +3,16 @@ from dotenv import load_dotenv
 from flask import Flask, jsonify, request, render_template, session
 import db
 from functools import wraps
+from flask_cors import CORS
 
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
+
+CORS(app,
+     supports_credentials=True,
+     origins=["https://nutrisync-zy9q.onrender.com"])
 
 load_dotenv()
 
