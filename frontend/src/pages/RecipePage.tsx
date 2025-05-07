@@ -1,5 +1,6 @@
 import { useState, useEffect, JSX } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { apiFetch } from "../api";
 
 interface Recipe {
   RecipeID: number;
@@ -40,7 +41,7 @@ export default function RecipeDetail(): JSX.Element {
   };
 
   const handleLike = async (): Promise<void> => {
-    const res = await fetch(`/api/recipe/${id}/like`, { method: 'POST' });
+    const res = await apiFetch(`/api/recipe/${id}/like`, { method: 'POST' });
     if (!res.ok) showAlert('error', 'Error liking recipe');
     else showAlert('success', '❤️ Recipe liked!');
   };
@@ -50,7 +51,7 @@ export default function RecipeDetail(): JSX.Element {
       showAlert('error', 'Serving size must be at least 1.');
       return;
     }
-    const res = await fetch(`/api/recipe/${id}/track`, {
+    const res = await apiFetch(`/api/recipe/${id}/track`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ servingSize })
@@ -63,9 +64,9 @@ export default function RecipeDetail(): JSX.Element {
     async function load() {
       try {
         const [rRes, iRes, cRes] = await Promise.all([
-          fetch(`/api/recipes/${id}`),
-          fetch(`/api/recipe/${id}/ingredients`),
-          fetch(`/api/recipe/${id}/categories`)
+          apiFetch(`/api/recipes/${id}`),
+          apiFetch(`/api/recipe/${id}/ingredients`),
+          apiFetch(`/api/recipe/${id}/categories`)
         ]);
         if (!rRes.ok) throw new Error('Recipe not found');
         const rData: Recipe = await rRes.json();
