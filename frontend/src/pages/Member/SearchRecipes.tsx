@@ -1,5 +1,6 @@
 import { useState, useEffect, ChangeEvent, JSX } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { apiFetch } from "../api";
 
 interface Category { categoryID: number; name: string; }
 interface Ingredient { ingredientID: number; name: string; }
@@ -18,9 +19,9 @@ export default function SearchRecipes(): JSX.Element {
   useEffect(() => {
     (async () => {
       const [catsRes, ingRes, recRes] = await Promise.all([
-        fetch('/api/categories'),
-        fetch('/api/ingredients'),
-        fetch('/api/recipes/search')
+        apiFetch('/api/categories'),
+        apiFetch('/api/ingredients'),
+        apiFetch('/api/recipes/search')
       ]);
       const [cats, ings, recs] = await Promise.all([catsRes.json(), ingRes.json(), recRes.json()]);
       setCategories(cats);
@@ -35,7 +36,7 @@ export default function SearchRecipes(): JSX.Element {
       const params = new URLSearchParams();
       if (selectedCategory) params.append('category_id', selectedCategory.toString());
       if (selectedIngredient) params.append('ingredient_id', selectedIngredient.toString());
-      const res = await fetch('/api/recipes/search?' + params.toString());
+      const res = await apiFetch('/api/recipes/search?' + params.toString());
       const data = await res.json();
       setRecipes(data);
     })();
