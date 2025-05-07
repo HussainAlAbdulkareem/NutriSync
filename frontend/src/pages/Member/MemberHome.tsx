@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
+import { apiFetch } from "../api";
 
 const MemberHome: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -9,7 +10,7 @@ const MemberHome: React.FC = () => {
 
   const fetchUserCalories = async () => {
     try {
-      const res = await fetch(`/api/member/${id}/calorie`);
+      const res = await apiFetch(`/api/member/${id}/calorie`);
       const data = await res.json();
       setUserCalories(data[0]);
     } catch {
@@ -19,7 +20,7 @@ const MemberHome: React.FC = () => {
 
   const fetchMember = async () => {
     try {
-      const res = await fetch(`/api/member/${id}`);
+      const res = await apiFetch(`/api/member/${id}`);
       const data = await res.json();
       setMember(data);
       console.log("👤 Member API:", data);
