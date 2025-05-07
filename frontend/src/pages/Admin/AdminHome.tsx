@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
+import { apiFetch } from "../api";
 
 const AdminHome: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -7,14 +8,14 @@ const AdminHome: React.FC = () => {
   const [adminData, setAdminData] = useState<{ adminName: string; analytics: any } | null>(null);
 
   useEffect(() => {
-    fetch(`/api/admin/${id}`)
+    apiFetch(`/api/admin/${id}`)
       .then((res) => res.json())
       .then((data) => setAdminData(data))
-      .catch((err) => console.error('Failed to fetch admin data', err));
+      .catch((err) => console.error('Failed to apiFetch admin data', err));
   }, [id]);
 
   const handleLogout = async () => {
-    await fetch('/api/logout', { method: 'POST' });
+    await apiFetch('/api/logout', { method: 'POST' });
     navigate('/login');
   };
 
