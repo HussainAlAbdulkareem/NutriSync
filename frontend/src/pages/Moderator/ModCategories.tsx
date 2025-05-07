@@ -1,6 +1,7 @@
 import { useState, useEffect, ChangeEvent, FormEvent, JSX } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
+import { apiFetch } from "../api";
 
 interface Category {
   categoryID: number;
@@ -24,18 +25,18 @@ export default function ModCategories(): JSX.Element {
 
   async function fetchUser() {
     try {
-      const res = await fetch('/api/user');
+      const res = await apiFetch('/api/user');
       const data = await res.json();
       setModeratorName(data.UserName || 'Moderator');
       setForm(prev => ({ ...prev, moderatorID: data.UserID }));
     } catch (err) {
-      console.error('Failed to fetch moderator', err);
+      console.error('Failed to apiFetch moderator', err);
     }
   }
 
   async function loadCategories() {
     try {
-      const res = await fetch('/api/categories');
+      const res = await apiFetch('/api/categories');
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data: Category[] = await res.json();
       setCategories(data);
@@ -57,7 +58,7 @@ export default function ModCategories(): JSX.Element {
   async function handleAdd(e: FormEvent) {
     e.preventDefault();
     try {
-      const res = await fetch('/api/category', {
+      const res = await apiFetch('/api/category', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form)
@@ -75,7 +76,7 @@ export default function ModCategories(): JSX.Element {
 
   async function handleDelete(id: number) {
     try {
-      const res = await fetch(`/api/category/${id}`, { method: 'DELETE' });
+      const res = await apiFetch(`/api/category/${id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Delete failed');
       setCategories(prev => prev.filter(c => c.categoryID !== id));
     } catch (err: any) {
