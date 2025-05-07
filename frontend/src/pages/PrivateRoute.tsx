@@ -1,6 +1,7 @@
 // src/components/PrivateRoute.tsx
 import { useState, useEffect, ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
+import { apiFetch } from "../api";
 
 export default function PrivateRoute({
   children,
@@ -13,7 +14,7 @@ export default function PrivateRoute({
 
   useEffect(() => {
     (async () => {
-      const res = await fetch('/api/user');
+      const res = await apiFetch('/api/user');
       if (!res.ok) {
         setStatus('denied');
         return;
