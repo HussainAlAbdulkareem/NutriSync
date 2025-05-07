@@ -1,7 +1,7 @@
 // src/components/PrivateRoute.tsx
 import { useState, useEffect, ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
-import { apiFetch } from "../api";
+import { apiFetch } from "./api";
 
 export default function PrivateRoute({
   children,

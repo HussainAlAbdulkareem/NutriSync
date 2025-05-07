@@ -1,6 +1,6 @@
 import { useState, useEffect, JSX } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { apiFetch } from "../api";
+import { apiFetch } from "./api";
 
 interface Recipe {
   RecipeID: number;
