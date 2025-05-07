@@ -1,6 +1,7 @@
 import { useState, FormEvent, JSX } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
+import { apiFetch } from "../api";
 
 export default function Signup(): JSX.Element {
   const [name, setName]         = useState('');
@@ -13,7 +14,7 @@ export default function Signup(): JSX.Element {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/signup', {
+      const res = await apiFetch('/api/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password, phone_no: phoneNo })
