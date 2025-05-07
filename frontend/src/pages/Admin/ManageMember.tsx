@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { apiFetch } from "../api";
 
 const ManageMember: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -15,13 +16,13 @@ const ManageMember: React.FC = () => {
 
   const fetchMembers = async () => {
     try {
-      const res = await fetch(`/api/admin/${id}/manage-member/`);
+      const res = await apiFetch(`/api/admin/${id}/manage-member/`);
       const data = await res.json();
       if (data[0] != null) {
         setMembers(data);
       }
     } catch (err) {
-      showBanner('Failed to fetch members', 'error');
+      showBanner('Failed to apiFetch members', 'error');
     }
   };
 
@@ -39,7 +40,7 @@ const ManageMember: React.FC = () => {
 
   const handleBulkAction = async (action: 'blacklist' | 'assign') => {
     try {
-      const res = await fetch(`/api/admin/${id}/${action}`, {
+      const res = await apiFetch(`/api/admin/${id}/${action}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user_ids: selectedUserIDs }),
