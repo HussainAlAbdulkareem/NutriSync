@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Select from "react-select";
+import { apiFetch } from "../api";
 
 type OptionType = {
   label: string;
@@ -29,7 +30,7 @@ const CreateRecipe: React.FC = () => {
   const [message, setMessage] = useState("");
 
   const fetchIngredients = async () => {
-    await fetch(`/api/member/${id}/ingredient`)
+    await apiFetch(`/api/member/${id}/ingredient`)
       .then(res => res.json())
       .then(data => {
         const options = data.map((ingredient: any) => ({
@@ -43,7 +44,7 @@ const CreateRecipe: React.FC = () => {
   };
 
   const fetchCategories = async () => {
-    await fetch(`/api/member/${id}/category`)
+    await apiFetch(`/api/member/${id}/category`)
       .then(res => res.json())
       .then(data => {
         const options = data.map((category: any) => ({
@@ -101,7 +102,7 @@ const CreateRecipe: React.FC = () => {
     }));
 
     try {
-      const response = await fetch(`/api/member/${id}/add-recipe`, {
+      const response = await apiFetch(`/api/member/${id}/add-recipe`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
