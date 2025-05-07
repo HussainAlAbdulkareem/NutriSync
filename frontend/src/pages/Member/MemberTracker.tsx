@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { apiFetch } from "../api";
 
 interface Recipe {
   id: string;
@@ -20,23 +21,23 @@ const MemberTracker: React.FC = () => {
 
   const fetchRecipes = async () => {
     try {
-      const res = await fetch(`/api/member/${id}/tracker/recipe`);
+      const res = await apiFetch(`/api/member/${id}/tracker/recipe`);
       const data = await res.json();
       if (data[0] != null){
         setRecipes(data);
       }
     } catch (err) {
-      alert('Failed to fetch recipes');
+      alert('Failed to apiFetch recipes');
     }
   };
 
   const fetchUserCalories = async () => {
     try {
-      const res = await fetch(`/api/member/${id}/calorie`);
+      const res = await apiFetch(`/api/member/${id}/calorie`);
       const data = await res.json();
       setTotalCalories(data[0]);
     } catch (err) {
-      alert('Failed to fetch user calories');
+      alert('Failed to apiFetch user calories');
     }
   };
 
@@ -45,7 +46,7 @@ const MemberTracker: React.FC = () => {
     if (!confirmed) return;
 
     try {
-      await fetch(`/api/member/${id}/tracker/delete/${recipeId}`, {
+      await apiFetch(`/api/member/${id}/tracker/delete/${recipeId}`, {
         method: 'DELETE',
       });
       await fetchRecipes();
