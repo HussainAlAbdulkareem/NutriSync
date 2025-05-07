@@ -6,6 +6,7 @@ from functools import wraps
 from flask_cors import CORS
 from urllib.parse import urlparse
 import logging
+import sys
 logging.basicConfig(level=logging.DEBUG)
 
 db_url = os.getenv('DATABASE_URL')
