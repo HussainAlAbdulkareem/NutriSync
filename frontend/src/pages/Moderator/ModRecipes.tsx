@@ -1,6 +1,7 @@
 import { useState, useEffect, JSX } from 'react';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { apiFetch } from "../api";
 
 interface Recipe {
   RecipeID: number;
@@ -23,7 +24,7 @@ export default function ModRecipes(): JSX.Element {
 
   const fetchUser = async () => {
     try {
-      const res = await fetch('/api/user');
+      const res = await apiFetch('/api/user');
       const data = await res.json();
       setModeratorName(data.UserName || 'Moderator');
     } catch {
@@ -33,7 +34,7 @@ export default function ModRecipes(): JSX.Element {
 
   const fetchRecipes = async () => {
     try {
-      const res = await fetch('/api/recipes/pending');
+      const res = await apiFetch('/api/recipes/pending');
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data: Recipe[] = await res.json();
       setRecipes(data);
@@ -46,7 +47,7 @@ export default function ModRecipes(): JSX.Element {
 
   const handleApprove = async (recipeId: number) => {
     try {
-      const res = await fetch(`/api/recipe/${recipeId}/approve`, {
+      const res = await apiFetch(`/api/recipe/${recipeId}/approve`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({moderatorID : id}),
@@ -60,7 +61,7 @@ export default function ModRecipes(): JSX.Element {
 
   const handleReject = async (recipeId: number) => {
     try {
-      const res = await fetch(`/api/recipe/${recipeId}/reject`, {
+      const res = await apiFetch(`/api/recipe/${recipeId}/reject`, {
         method: 'POST',
       });
       if (!res.ok) throw new Error('Rejection failed');
