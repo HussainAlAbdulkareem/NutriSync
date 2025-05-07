@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { apiFetch } from "../api";
 
 const ManageModerator: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -10,13 +11,13 @@ const ManageModerator: React.FC = () => {
 
   const fetchModerator = async () => {
     try {
-      const res = await fetch(`/api/admin/${id}/manage-moderator/`);
+      const res = await apiFetch(`/api/admin/${id}/manage-moderator/`);
       const data = await res.json();
       if (data[0] != null) {
         setModerators(data);
       }
     } catch (err) {
-      showBanner('Failed to fetch moderators', 'error');
+      showBanner('Failed to apiFetch moderators', 'error');
     }
   };
 
@@ -39,7 +40,7 @@ const ManageModerator: React.FC = () => {
 
   const handleBulkAction = async (action: 'blacklist' | 'unassign') => {
     try {
-      const res = await fetch(`/api/admin/${id}/${action}`, {
+      const res = await apiFetch(`/api/admin/${id}/${action}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user_ids: selectedUserIDs }),
