@@ -1,7 +1,7 @@
 import { useState, FormEvent, JSX } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
-import { apiFetch } from "../api";
+import { apiFetch } from "./api";
 
 export default function Login(): JSX.Element {
   const [email, setEmail] = useState('');
