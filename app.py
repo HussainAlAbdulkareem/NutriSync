@@ -4,9 +4,17 @@ from flask import Flask, jsonify, request, render_template, session
 import db
 from functools import wraps
 from flask_cors import CORS
-
+from urllib.parse import urlparse
 import logging
 logging.basicConfig(level=logging.DEBUG)
+
+db_url = os.getenv('DATABASE_URL')
+print("→ DATABASE_URL is:", db_url)  
+if not db_url:
+    raise RuntimeError("DATABASE_URL is not set!")
+
+result = urlparse(db_url)
+print("→ Parsed host:", result.hostname)  
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
