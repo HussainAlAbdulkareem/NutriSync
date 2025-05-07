@@ -1,6 +1,7 @@
 import { useState, useEffect, ChangeEvent, FormEvent, JSX } from 'react';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { apiFetch } from "../api";
 
 interface Ingredient {
   ingredientID: number;
@@ -26,17 +27,17 @@ export default function ModIngredients(): JSX.Element {
 
   async function fetchUser() {
     try {
-      const res = await fetch('/api/user');
+      const res = await apiFetch('/api/user');
       const data = await res.json();
       setModeratorName(data.UserName || 'Moderator');
     } catch (err) {
-      console.error('Failed to fetch user', err);
+      console.error('Failed to apiFetch user', err);
     }
   }
 
   async function loadIngredients() {
     try {
-      const res = await fetch('/api/ingredients');
+      const res = await apiFetch('/api/ingredients');
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data: Ingredient[] = await res.json();
       setIngredients(data);
@@ -58,7 +59,7 @@ export default function ModIngredients(): JSX.Element {
   async function handleAdd(e: FormEvent) {
     e.preventDefault();
     try {
-      const res = await fetch('/api/ingredient', {
+      const res = await apiFetch('/api/ingredient', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form)
@@ -76,7 +77,7 @@ export default function ModIngredients(): JSX.Element {
 
   async function handleDelete(id: number) {
     try {
-      const res = await fetch(`/api/ingredient/${id}`, { method: 'DELETE' });
+      const res = await apiFetch(`/api/ingredient/${id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Delete failed');
       setIngredients(prev => prev.filter(i => i.ingredientID !== id));
     } catch (err: any) {
