@@ -10,9 +10,13 @@ logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
-CORS(app,
-     supports_credentials=True,
-     origins=["https://nutrisync-zy9q.onrender.com"])
+CORS(
+    app,
+    supports_credentials=True,
+    resources={ r"/api/*": { "origins": [
+        "https://nutrisync-1-c37i.onrender.com"
+    ]}}
+)
 
 load_dotenv()
 
