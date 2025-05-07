@@ -1,5 +1,6 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { apiFetch } from "../api";
 import {
   LineChart,
   Line,
@@ -32,28 +33,28 @@ export default function ModeratorHome() {
   const [moderatorData, setModeratorData] = useState<{ UserID: string, UserName: string, Role: string } | null>(null);
 
   useEffect(() => {
-    fetch('/api/user', { credentials: 'include' })
+    apiFetch('/api/user', { credentials: 'include' })
       .then(res => res.json())
       .then(data => setModeratorData(data))
-      .catch(err => console.error("Failed to fetch moderator info:", err));
+      .catch(err => console.error("Failed to apiFetch moderator info:", err));
   }, []);
 
   useEffect(() => {
-    fetch('/api/chart/approved-recipes', { credentials: 'include' })
+    apiFetch('/api/chart/approved-recipes', { credentials: 'include' })
       .then(res => res.json())
       .then(data => setChartData(data))
-      .catch(err => console.error("Failed to fetch chart data:", err));
+      .catch(err => console.error("Failed to apiFetch chart data:", err));
   }, []);
 
   useEffect(() => {
-    fetch('/api/chart/approval-status', { credentials: 'include' })
+    apiFetch('/api/chart/approval-status', { credentials: 'include' })
       .then(res => res.json())
       .then(data => setPieData(data))
-      .catch(err => console.error("Failed to fetch pie chart data:", err));
+      .catch(err => console.error("Failed to apiFetch pie chart data:", err));
   }, []);
 
   const handleLogout = async () => {
-    await fetch('/api/logout', { method: 'POST', credentials: 'include' });
+    await apiFetch('/api/logout', { method: 'POST', credentials: 'include' });
     navigate('/login');
   };
 
