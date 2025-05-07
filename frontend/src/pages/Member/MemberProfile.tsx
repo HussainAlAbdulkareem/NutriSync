@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { apiFetch } from "../api";
 
 interface Member {
   id: string;
@@ -30,20 +31,20 @@ const MemberProfile: React.FC = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const res = await fetch(`/api/member/${id}/profile`);
+      const res = await apiFetch(`/api/member/${id}/profile`);
       const data = await res.json();
       setUser(data);
       setEditedUser(data);
     };
 
     const fetchUserRecipes = async () => {
-      const res = await fetch(`/api/member/${id}/recipe`);
+      const res = await apiFetch(`/api/member/${id}/recipe`);
       const data = await res.json();
       setUserRecipes(data);
     };
 
     const fetchUserLikedRecipes = async () => {
-      const res = await fetch(`/api/member/${id}/liked`);
+      const res = await apiFetch(`/api/member/${id}/liked`);
       const data = await res.json();
       setLikedRecipes(data);
     };
@@ -60,7 +61,7 @@ const MemberProfile: React.FC = () => {
   };
 
   const handleDeleteProfile = async () => {
-    const res = await fetch(`/api/member/${id}/profile`, { method: 'DELETE' });
+    const res = await apiFetch(`/api/member/${id}/profile`, { method: 'DELETE' });
     if (!res.ok) {
       alert('Unable to delete profile');
       return;
@@ -70,7 +71,7 @@ const MemberProfile: React.FC = () => {
 
   const handleSave = async () => {
     try {
-      await fetch(`/api/member/${id}/profile/update`, {
+      await apiFetch(`/api/member/${id}/profile/update`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(editedUser),
@@ -150,7 +151,7 @@ const MemberProfile: React.FC = () => {
                     <button
                       onClick={async () => {
                         if (!window.confirm('Delete this recipe?')) return;
-                        const res = await fetch(
+                        const res = await apiFetch(
                           `/api/member/${id}/recipe/${r.id}`,
                           { method: 'DELETE' }
                         );
@@ -188,7 +189,7 @@ const MemberProfile: React.FC = () => {
                 <button
                   onClick={async () => {
                     try {
-                      const res = await fetch(`/api/recipe/${r.id}/unlike`, {
+                      const res = await apiFetch(`/api/recipe/${r.id}/unlike`, {
                         method: 'POST'
                       });
                       if (!res.ok) throw new Error('Unable to unlike');
