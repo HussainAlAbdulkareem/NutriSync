@@ -1,3 +1,14 @@
+import socket
+
+_orig_getaddrinfo = socket.getaddrinfo
+
+def _getaddrinfo_ipv4_only(host, port, family=0, type=0, proto=0, flags=0):
+    results = _orig_getaddrinfo(host, port, family, type, proto, flags)
+    return [entry for entry in results if entry[0] == socket.AF_INET]
+
+socket.getaddrinfo = _getaddrinfo_ipv4_only
+
+
 import os
 from dotenv import load_dotenv
 import psycopg2
@@ -12,7 +23,8 @@ def get_connection():
         user=result.username,
         password=result.password,
         host=result.hostname,
-        port=result.port
+        port=result.port,
+        sslmode="require"
     )
     
 
