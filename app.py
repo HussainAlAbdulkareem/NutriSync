@@ -11,17 +11,31 @@ logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
-CORS(
-    app,
-    supports_credentials=True,
-    resources={ r"/api/*": { "origins": [
-        "https://nutrisync-1-c37i.onrender.com"
-    ]}}
-)
-
 load_dotenv()
 
 app.secret_key = os.getenv('secret_key', 'dev_key') 
+
+# --- MANUAL CORS MIDDLEWARE ---
+ALLOWED_ORIGIN = "https://nutrisync-1-c37i.onrender.com"
+
+@app.before_request
+def handle_preflight():
+    # if this is a CORS preflight, reply immediately
+    if request.method == 'OPTIONS' and request.path.startswith('/api/'):
+        resp = make_response()
+        resp.headers['Access-Control-Allow-Origin'] = ALLOWED_ORIGIN
+        resp.headers['Access-Control-Allow-Credentials'] = 'true'
+        resp.headers['Access-Control-Allow-Methods'] = 'GET,POST,PUT,DELETE,OPTIONS'
+        resp.headers['Access-Control-Allow-Headers'] = 'Content-Type,Authorization'
+        return resp
+
+@app.after_request
+def inject_cors_headers(response):
+    # inject CORS headers on all /api/ responses
+    if request.path.startswith('/api/'):
+        response.headers['Access-Control-Allow-Origin'] = ALLOWED_ORIGIN
+        response.headers['Access-Control-Allow-Credentials'] = 'true'
+    return response
 
 # Decorator to restrict access based on userflag in session
 def roles_required(*allowed_roles):
