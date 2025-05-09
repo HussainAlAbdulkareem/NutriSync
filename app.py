@@ -16,8 +16,6 @@ app.config.update(
     SESSION_COOKIE_SAMESITE="None",
     # only over HTTPS
     SESSION_COOKIE_SECURE=True,
-    # make the cookie valid on ANY .onrender.com subdomain
-    SESSION_COOKIE_DOMAIN=".onrender.com",
 )
 
 CORS(
