@@ -10,6 +10,16 @@ import sys
 logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
+
+app.config.update(
+    # allow this cookie in third-party contexts
+    SESSION_COOKIE_SAMESITE="None",
+    # only over HTTPS
+    SESSION_COOKIE_SECURE=True,
+    # make the cookie valid on ANY .onrender.com subdomain
+    SESSION_COOKIE_DOMAIN=".onrender.com",
+)
+
 CORS(
     app,
     supports_credentials=True,
