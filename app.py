@@ -21,7 +21,7 @@ app.config.update(
 CORS(
     app,
     supports_credentials=True,
-    resources={r"/api/*": {"origins": "https://nutrisync-1-c37i.onrender.com"}}
+    resources={r"/api/*": {"origins": "https://nutrisync-app.onrender.com"}}
 )
 
 load_dotenv()
