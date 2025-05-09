@@ -9,29 +9,8 @@ import logging
 import sys
 logging.basicConfig(level=logging.DEBUG)
 
-db_url = os.getenv('DATABASE_URL')
-print(">>> DEBUG: DATABASE_URL =", db_url, file=sys.stderr)
-
-if not db_url:
-    print(">>> ERROR: DATABASE_URL is empty!", file=sys.stderr)
-else:
-    parsed = urlparse(db_url)
-    print(">>> DEBUG: Parsed host:", parsed.hostname, "port:", parsed.port, file=sys.stderr)
-
-# Then in get_connection():
-def get_connection():
-    # instead of parsing yourself, pass the full DSN string:
-    return psycopg2.connect(dsn=db_url, sslmode="require")
-
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
-CORS(
-    app,
-    supports_credentials=True,
-    resources={ r"/api/*": { "origins": [
-        "https://nutrisync-1-c37i.onrender.com"
-    ]}}
-)
 
 load_dotenv()
 

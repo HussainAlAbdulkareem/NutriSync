@@ -24,7 +24,6 @@ def get_connection():
         password=result.password,
         host=result.hostname,
         port=result.port,
-        sslmode="require"
     )
     
 
