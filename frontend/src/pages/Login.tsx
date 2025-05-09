@@ -14,6 +14,7 @@ export default function Login(): JSX.Element {
     try {
       const res = await apiFetch('/api/login', {
         method: 'POST',
+        credentials: 'include', 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
