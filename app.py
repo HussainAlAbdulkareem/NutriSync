@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 from flask import Flask, jsonify, request, render_template, session
 import db
+import recommendation as rec
 from functools import wraps
 from flask_cors import CORS
 from urllib.parse import urlparse
@@ -205,6 +206,22 @@ def add_recipe(id):
         db.add_recipe_ingredient(recipe_id, ingredient.get("id"), ingredient.get("quantity"))
     for category in categories:
         db.add_recipe_category(recipe_id, category.get("id"))
+
+@app.route("/api/member/<int:id>/recommend", methods=["GET"])
+@login_required
+def recommend_recipe(id):
+    recipe = rec.recommend(id)
+    if recipe:
+        recipe_json = [{
+            "id": str(recipe[0]),
+            "name": str(recipe[1]),
+            "description": str(recipe[2]),
+            "image": str(recipe[3])
+        }]
+        print(recipe)
+        return jsonify(recipe_json)
+    else:
+        return jsonify([])
 
 # -------------------------------------------------- MEMBER --------------------------------------------------
 

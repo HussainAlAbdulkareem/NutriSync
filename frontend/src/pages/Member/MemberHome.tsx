@@ -1,20 +1,44 @@
+import { Button } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { apiFetch } from "../api";
+
+interface Recipe {
+  id: string;
+  name: string;
+  description: string;
+  image: string;
+}
 
 const MemberHome: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [userCalories, setUserCalories] = useState<number>(0);
   const [member, setMember] = useState<{ Name: string; recipe: number } | null>(null);
+  const [recommendation, setRecommendation] = useState<Recipe[] | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const openModal = () => setIsOpen(true);
+  const closeModal = () => setIsOpen(false);
 
   const fetchUserCalories = async () => {
     try {
       const res = await apiFetch(`/api/member/${id}/calorie`);
       const data = await res.json();
       setUserCalories(data[0]);
-    } catch {
+    } catch (error) {
+      console.error('Error fetching user calories:', error);
       alert('Failed to fetch user calories');
+    }
+  };
+
+  const fetchRecommendedRecipes = async () => {
+    try {
+      const res = await apiFetch(`/api/member/${id}/recommend`);
+      const data = await res.json();
+      setRecommendation(data);
+    } catch (error) {
+      alert('Failed to fetch recommended recipes');
     }
   };
 
@@ -23,8 +47,8 @@ const MemberHome: React.FC = () => {
       const res = await apiFetch(`/api/member/${id}`);
       const data = await res.json();
       setMember(data);
-      console.log("👤 Member API:", data);
-    } catch {
+    } catch (error) {
+      console.error('Error fetching member:', error);
       alert('Failed to fetch member');
     }
   };
@@ -32,40 +56,99 @@ const MemberHome: React.FC = () => {
   useEffect(() => {
     fetchUserCalories();
     fetchMember();
+    fetchRecommendedRecipes();
   }, []);
 
   const handleLogout = async () => {
-    await fetch('/api/logout', { method: 'POST' });
+    await apiFetch('/api/logout', { method: 'POST' });
     navigate('/login');
   };
+
   if (member === null) return <div className="text-center py-10 text-gray-600">Loading...</div>;
 
   return (
     <>
       {/* Simple Navbar */}
       <nav className="flex items-center justify-between px-8 py-4 bg-white shadow border-b border-gray-200">
-  <div className="text-2xl font-extrabold text-blue-700 tracking-tight">NutriSync</div>
-  <div className="flex items-center gap-4">
-    
-    <span className="text-2xl font-extrabold text-blue-700 tracking-tight">Member</span>
-    <Link
-      to={`/member/${id}/profile`}
-      title="View Profile"
-      className="w-9 h-9 rounded-full bg-blue-100 hover:bg-blue-200 flex items-center justify-center text-blue-700 font-bold shadow-sm transition duration-200"
-    >
-      👤
-    </Link>
+        <div className="text-2xl font-extrabold text-blue-700 tracking-tight">NutriSync</div>
+        <div className="flex items-center gap-4">
+          <span className="text-2xl font-extrabold text-blue-700 tracking-tight">Member</span>
+          
+          {/* Popup Button */}
+<div>
+  <Button 
+    className="w-9 h-9 rounded-full bg-blue-100 hover:bg-blue-200 flex items-center justify-center text-blue-700 font-bold shadow-sm transition duration-200" 
+    onClick={openModal}
+  >
+    ❓
+  </Button>
 
-    <button
-      onClick={handleLogout}
-      className="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded-md text-sm"
+  <div
+    className={`fixed inset-0 flex items-center justify-center bg-slate-700/30 transition-opacity duration-200 ${
+      isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+    }`}
+  >
+    <div
+      className="max-h-[calc(100vh-5em)] h-fit max-w-lg rounded-lg bg-white p-6 text-black shadow-2xl transition-transform duration-200 relative"
+      style={{ transform: isOpen ? 'scale(1)' : 'scale(0.9)' }}
     >
-      Logout
-    </button>
+      {/* Popup Title */}
+      <div className="flex items-center justify-between mb-4 border-b pb-3">
+        <h1 className="text-2xl font-bold text-blue-700">Recommended Recipe</h1>
+        <button 
+          onClick={closeModal} 
+          className="text-gray-400 hover:text-gray-600 transition duration-200"
+        >
+          ✖️
+        </button>
+      </div>
+
+      {/* Popup Content */}
+      {recommendation && recommendation.length > 0 ? (
+        <div key={recommendation[0].id} className="border rounded-lg overflow-hidden shadow-sm mb-6">
+          <img 
+            src={recommendation[0].image} 
+            alt={recommendation[0].name} 
+            className="w-full h-40 object-cover mb-4 rounded-t-lg"
+          />
+          <div className="p-4">
+            <h4 className="text-lg font-semibold mb-2">{recommendation[0].name}</h4>
+            <p className="text-sm text-gray-600 mb-4">{recommendation[0].description}</p>
+            <p className="font-thin text-sm text-gray-500">
+              *Recommendations based on past liked recipe analytics
+            </p>
+          </div>
+        </div>
+      ) : (
+        <p className="text-center text-gray-500">Loading...</p>
+      )}
+
+      {/* Close Button */}
+      <div className="flex justify-end mt-4">
+        <Button variant="contained" color="primary" onClick={closeModal}>
+          Close
+        </Button>
+      </div>
+    </div>
   </div>
-</nav>
+</div>
 
+          <Link
+            to={`/member/${id}/profile`}
+            title="View Profile"
+            className="w-9 h-9 rounded-full bg-blue-100 hover:bg-blue-200 flex items-center justify-center text-blue-700 font-bold shadow-sm transition duration-200"
+          >
+            👤
+          </Link>
 
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded-md text-sm"
+          >
+            Logout
+          </button>
+        </div>
+      </nav>
 
       <div className="min-h-screen bg-gray-50 px-6 py-10">
         {/* Welcome card */}
